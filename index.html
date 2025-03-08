@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            padding: 10px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .chat-box {
+            flex: 1;
+            background-color: #333;
+            border-radius: 10px 10px 0 0;
+            padding: 15px;
+            overflow-y: auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #ff4500;
+            text-align: right;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #444;
+            text-align: left;
+            align-self: flex-start;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background-color: #222;
+            border-radius: 0 0 10px 10px;
+            gap: 5px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            background-color: #444;
+            color: white;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #ff4500;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ff6347;
+        }
+
+        /* LOADING SCREEN */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .loading-text {
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ff4500;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .show-loading {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>AI Chatbot</h1>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <div class="bot-message message">Hi, ayat HAHAHAHA. So ayun, figure this one out! Jk</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Type a prompt..." autocomplete="off">
+            <button onclick="sendMessage()">Send</button>
+            <p class="error-message" id="errorMessage">⚠️ Awe mali.</p>
+        </div>
+    </div>
+
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">Processing...</div>
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Listen for Enter key
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            let userInput = document.getElementById("userInput").value.trim();
+            let chatBox = document.getElementById("chatBox");
+            let loadingScreen = document.getElementById("loadingScreen");
+            let errorMessage = document.getElementById("errorMessage");
+
+            // Correct input that allows transition
+            const correctInput = "babi";
+
+            if (userInput === "") return;
+
+            // Add user message to chat
+            let userMessage = document.createElement("div");
+            userMessage.classList.add("user-message", "message");
+            userMessage.textContent = userInput;
+            chatBox.appendChild(userMessage);
+
+            // Clear input field after sending the message
+            document.getElementById("userInput").value = "";
+
+            // Scroll to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (userInput.toLowerCase() === correctInput.toLowerCase()) {
+                // Hide error message if correct
+                errorMessage.style.display = "none";
+
+                // Show loading screen
+                loadingScreen.classList.add("show-loading");
+
+                // Redirect to sample.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = `flower.html?name=${encodeURIComponent(userInput)}`;
+                }, 2000);
+            } else {
+                // AI response for incorrect input
+                let botMessage = document.createElement("div");
+                botMessage.classList.add("bot-message", "message");
+                botMessage.textContent = "The right answer is what you call me.";
+                chatBox.appendChild(botMessage);
+
+                // Show error message
+                errorMessage.style.display = "block";
+
+                // Scroll to the bottom to show AI response
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
